@@ -1,13 +1,13 @@
 require("@nomicfoundation/hardhat-toolbox")
 require("hardhat-contract-sizer")
 require("@openzeppelin/hardhat-upgrades")
-//require("./tasks")
+require("./tasks")
+
+//require("dotenv").config()
 
 //@note use encryption
-//require("@chainlink/env-enc").config()
-//const { networks } = require("./networks")
-
-require("dotenv").config()
+require("@chainlink/env-enc").config()
+const { networks } = require("./networks")
 
 const { PRIVATE_KEY_LOCAL } = process.env
 
@@ -34,39 +34,31 @@ module.exports = {
                 version: "0.8.19",
                 settings: SOLC_SETTINGS,
             },
-            // {
-            //   version: "0.6.6",
-            //   settings: SOLC_SETTINGS,
-            // },
-            // {
-            //   version: "0.4.24",
-            //   settings: SOLC_SETTINGS,
-            // },
         ],
     },
     networks: {
-        // hardhat: {
-        //   allowUnlimitedContractSize: true,
-        //   accounts: process.env.PRIVATE_KEY_LOCAL
-        //     ? [
-        //         {
-        //           privateKey: process.env.PRIVATE_KEY_LOCAL,
-        //           balance: "10000000000000000000000",
-        //         },
-        //       ]
-        //     : [],
-        // },
+        hardhat: {
+            allowUnlimitedContractSize: true,
+            accounts: PRIVATE_KEY_LOCAL
+                ? [
+                      {
+                          privateKey: PRIVATE_KEY_LOCAL,
+                          balance: "10000000000000000000000",
+                      },
+                  ]
+                : [],
+        },
         //@note add all other networks
-        //...networks,
+        ...networks,
     },
-    // etherscan: {
-    //   // npx hardhat verify --network <NETWORK> <CONTRACT_ADDRESS> <CONSTRUCTOR_PARAMETERS>
-    //   // to get exact network names: npx hardhat verify --list-networks
-    //   apiKey: {
-    //     sepolia: networks.sepolia.verifyApiKey,
-    //     avalancheFujiTestnet: networks.fuji.verifyApiKey,
-    //   },
-    // },
+    etherscan: {
+        // npx hardhat verify --network <NETWORK> <CONTRACT_ADDRESS> <CONSTRUCTOR_PARAMETERS>
+        // to get exact network names: npx hardhat verify --list-networks
+        apiKey: {
+            sepolia: networks.sepolia.verifyApiKey,
+            avalancheFujiTestnet: networks.fuji.verifyApiKey,
+        },
+    },
     gasReporter: {
         enabled: REPORT_GAS,
         currency: "USD",
